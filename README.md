@@ -4,3 +4,4 @@ Requirements:
 -dm-acme: the RL framework including many typical agents
 -gym-ingress: a openai gym-based wrapper for the bit-car-in-out-controller
 -mc_mujoco: physics engine
+-docker and xmanager: for distributed learning (multi-processing)
