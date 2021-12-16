@@ -9,7 +9,7 @@ from acme import environment_loop
 from acme import specs
 from acme import wrappers
 
-environment=gym.make('Ingress-v0',visualization=True)
+environment=gym.make('Ingress-v1',visualization=True)
 environment = wrappers.GymWrapper(environment)
 environment=wrappers.SinglePrecisionWrapper(environment)
 from acme.agents.tf import d4pg

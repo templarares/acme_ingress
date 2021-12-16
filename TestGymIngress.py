@@ -5,7 +5,7 @@ import sys
 import threading
 
 
-myenv=gym.make('Ingress-v0',visualization=True)
+myenv=gym.make('Ingress-v1',visualization=True)
 myenv.reset()
 action=np.ones((12,))*0.01
 myenv.step(action)

@@ -28,7 +28,7 @@ def make_environment(x):
     import gym_ingress_mc
     """Visulisation still not working, as visulized environment has to be created before acme.tf imports
     when visulization works, let the argument visulization=x instead of always False"""
-    environment=gym.make('Ingress-v0',visualization=False)
+    environment=gym.make('Ingress-v1',visualization=False)
     environment = wrappers.GymWrapper(environment)
     environment=wrappers.SinglePrecisionWrapper(environment)
     environment.reset()
