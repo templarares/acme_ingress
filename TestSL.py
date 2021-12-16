@@ -9,14 +9,14 @@ from acme import environment_loop
 from acme import specs
 from acme import wrappers
 
-environment0=gym.make('Ingress-v0',visualization=True)
-environment0 = wrappers.GymWrapper(environment0)
-environment0=wrappers.SinglePrecisionWrapper(environment0)
+environment=gym.make('Ingress-v0',visualization=True)
+environment = wrappers.GymWrapper(environment)
+environment=wrappers.SinglePrecisionWrapper(environment)
 from acme.agents.tf import d4pg
 from acme.tf import networks
 from acme.tf import utils as tf2_utils
+from acme.tf import savers as tf2_savers
 from acme.utils import loggers
-del environment0
 import sonnet as snt
 import pyvirtualdisplay
 import imageio
@@ -27,9 +27,6 @@ import tensorflow as tf
 physical_devices = tf.config.list_physical_devices('GPU')
 tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-environment=gym.make('Ingress-v0',visualization=True)
-environment = wrappers.GymWrapper(environment)
-environment=wrappers.SinglePrecisionWrapper(environment)
 # Grab the spec of the environment.
 environment_spec = specs.make_environment_spec(environment)
 
@@ -47,6 +44,16 @@ policy_network = snt.Sequential([
     networks.NearZeroInitializedLinear(num_dimensions),
     networks.TanhToSpec(environment_spec.actions),
 ])
+
+#copy policy network from a checkpoint
+checkpointer = tf2_savers.Checkpointer(
+    subdirectory='d4pg_learner',
+    objects_to_save={
+        'policy': policy_network,
+    })
+" this will restore from a previous checkpoint; replace names accordingly"
+ckpt = '/home/templarares/acme/f997802c-5d99-11ec-903a-7085c2d3e4e3/checkpoints/d4pg_learner/ckpt-8'
+checkpointer._checkpoint.restore(ckpt).expect_partial()
 
 # Create the distributional critic network.
 critic_network = snt.Sequential([
@@ -69,34 +76,18 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.7,
-    checkpoint=True
+    checkpoint=False
 )
 
 
-
-# Create an loop connecting this agent to the environment created above.
-env_loop = environment_loop.EnvironmentLoop(
-    environment, agent, logger=env_loop_logger)
-
-# Run a `num_episodes` training episodes.
-# Rerun this cell until the agent has learned the given task.clear
-numEpi=100
-env_loop.run(num_episodes=numEpi)
-fig=plt.figure()
-ax=plt.axes()
-x=range(numEpi)
-ax.scatter(x,env_loop.rewardHistory())
-plt.savefig('foo.png')
-plt.show()
-
-# #learning completed. Now play the result
-# timestep = environment.reset()
-# reward=0
-# while not timestep.last():
-#   # Simple environment loop.
-#   action = agent.select_action(timestep.observation)
-#   timestep = environment.step(action)
-#   print("reward is: ",timestep.reward)
-#   print("action is: ", action)
-#   reward+=timestep.reward
-# print("final reward is",reward)
+#learning completed. Now play the result
+timestep = environment.reset()
+reward=0
+while not timestep.last():
+  # Simple environment loop.
+  action = agent.select_action(timestep.observation)
+  timestep = environment.step(action)
+  print("reward is: ",timestep.reward)
+  print("action is: ", action)
+  reward+=timestep.reward
+print("final reward is",reward)

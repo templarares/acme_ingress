@@ -1,0 +1,9 @@
+Wed Dec 15 17:18:57 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Thu Dec 16 11:12:02 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Thu Dec 16 11:14:08 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
