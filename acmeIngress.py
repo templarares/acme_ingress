@@ -1,35 +1,35 @@
-from dm_env import TimeStep
+
 import gym
 import gym_ingress_mc
 import numpy as np
+environment=gym.make('Ingress-v1',visualization=True)
+environment.reset()
+foo=np.zeros((8,))
+environment.step(foo)
+environment.reset()
+
 import IPython
 import matplotlib
 import matplotlib.pyplot as plt
 from acme import environment_loop
 from acme import specs
 from acme import wrappers
+from dm_env import TimeStep
 
-environment0=gym.make('Ingress-v0',visualization=True)
-environment0 = wrappers.GymWrapper(environment0)
-environment0=wrappers.SinglePrecisionWrapper(environment0)
+environment = wrappers.GymWrapper(environment)
+environment=wrappers.SinglePrecisionWrapper(environment)
+environment.reset()
+foo=np.zeros((8,))
+environment.step(foo)
+environment.reset()
 from acme.agents.tf import d4pg
 from acme.tf import networks
 from acme.tf import utils as tf2_utils
 from acme.utils import loggers
-del environment0
+
 import sonnet as snt
-import pyvirtualdisplay
-import imageio
-import base64
-matplotlib.use('TkAgg')
 
-import tensorflow as tf
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
-environment=gym.make('Ingress-v1',visualization=True)
-environment = wrappers.GymWrapper(environment)
-environment=wrappers.SinglePrecisionWrapper(environment)
 # Grab the spec of the environment.
 environment_spec = specs.make_environment_spec(environment)
 
@@ -43,7 +43,7 @@ observation_network = tf2_utils.batch_concat
 
 # Create the deterministic policy network.
 policy_network = snt.Sequential([
-    networks.LayerNormMLP((256, 256, 256), activate_final=True),
+    networks.LayerNormMLP((256*2, 256*2, 256*2), activate_final=True),
     networks.NearZeroInitializedLinear(num_dimensions),
     networks.TanhToSpec(environment_spec.actions),
 ])
@@ -52,10 +52,9 @@ policy_network = snt.Sequential([
 critic_network = snt.Sequential([
     # The multiplexer concatenates the observations/actions.
     networks.CriticMultiplexer(),
-    networks.LayerNormMLP((512, 512, 256), activate_final=True),
+    networks.LayerNormMLP((512*2, 512*2, 256*2), activate_final=True),
     networks.DiscreteValuedHead(vmin=-150., vmax=150., num_atoms=51),
 ])
-
 # Create a logger for the agent and environment loop.
 def myprint(content):
     print(content)
@@ -74,29 +73,32 @@ agent = d4pg.D4PG(
 
 
 
-# Create an loop connecting this agent to the environment created above.
-env_loop = environment_loop.EnvironmentLoop(
-    environment, agent, logger=env_loop_logger)
+# # Create an loop connecting this agent to the environment created above.
+# env_loop = environment_loop.EnvironmentLoop(
+#     environment, agent, logger=env_loop_logger)
 
 # Run a `num_episodes` training episodes.
 # Rerun this cell until the agent has learned the given task.clear
-numEpi=100
-env_loop.run(num_episodes=numEpi)
-fig=plt.figure()
-ax=plt.axes()
-x=range(numEpi)
-ax.scatter(x,env_loop.rewardHistory())
-plt.savefig('foo.png')
-plt.show()
+# numEpi=100
+# env_loop.run(num_episodes=numEpi)
+# fig=plt.figure()
+# ax=plt.axes()
+# x=range(numEpi)
+# ax.scatter(x,env_loop.rewardHistory())
+# plt.savefig('foo.png')
+# plt.show()
 
-# #learning completed. Now play the result
-# timestep = environment.reset()
-# reward=0
-# while not timestep.last():
-#   # Simple environment loop.
-#   action = agent.select_action(timestep.observation)
-#   timestep = environment.step(action)
-#   print("reward is: ",timestep.reward)
-#   print("action is: ", action)
-#   reward+=timestep.reward
-# print("final reward is",reward)
+#learning completed. Now play the result
+for i in range(20):
+    timestep = environment.reset()
+    reward=0
+    while not timestep.last():
+    # Simple environment loop.
+        action = agent.select_action(timestep.observation)
+
+        timestep = environment.step(action)
+
+        #   print("reward is: ",timestep.reward)
+        #   print("action is: ", action)
+        reward+=timestep.reward
+    print("final reward is",reward)

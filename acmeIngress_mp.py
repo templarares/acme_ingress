@@ -66,7 +66,7 @@ env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time
 agent = d4pg.DistributedD4PG(
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
-    num_actors=8,
+    num_actors=10,
     batch_size=128,
     min_replay_size=100,
     max_replay_size=1000,
