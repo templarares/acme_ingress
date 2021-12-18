@@ -2,7 +2,7 @@
 import gym
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v1',visualization=True)
+environment=gym.make('Ingress-v1',visualization=False)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -15,7 +15,6 @@ from acme import environment_loop
 from acme import specs
 from acme import wrappers
 from dm_env import TimeStep
-
 environment = wrappers.GymWrapper(environment)
 environment=wrappers.SinglePrecisionWrapper(environment)
 environment.reset()
@@ -67,7 +66,8 @@ agent = d4pg.D4PG(
     policy_network=policy_network,
     critic_network=critic_network,
     observation_network=observation_network,
-    sigma=0.7,
+    sigma=0.0,
+    n_step=5,
     checkpoint=True
 )
 
