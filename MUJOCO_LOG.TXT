@@ -70,3 +70,45 @@ ERROR: Unknown camera type in mjv_updateCamera
 Mon Dec 20 21:13:58 2021
 ERROR: Unknown camera type in mjv_updateCamera
 
+Tue Dec 21 10:47:09 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 10:55:02 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 10:55:56 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 11:01:05 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 11:01:12 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 11:02:06 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 11:02:11 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 14:50:18 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 14:52:24 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 20:00:22 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 20:00:44 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 20:01:15 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 20:01:21 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
+Tue Dec 21 20:02:12 2021
+ERROR: Unknown camera type in mjv_updateCamera
+
