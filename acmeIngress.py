@@ -2,7 +2,7 @@
 import gym
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v1',visualization=False)
+environment=gym.make('Ingress-v2',visualization=False)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -38,7 +38,7 @@ observation_network = tf2_utils.batch_concat
 
 # Create the deterministic policy network.
 policy_network = snt.Sequential([
-    networks.LayerNormMLP((256*2, 256*2, 256*2), activate_final=True),
+    networks.LayerNormMLP((256, 256, 256), activate_final=True),
     networks.NearZeroInitializedLinear(num_dimensions),
     networks.TanhToSpec(environment_spec.actions),
 ])
@@ -47,7 +47,7 @@ policy_network = snt.Sequential([
 critic_network = snt.Sequential([
     # The multiplexer concatenates the observations/actions.
     networks.CriticMultiplexer(),
-    networks.LayerNormMLP((512*2, 512*2, 256*2), activate_final=True),
+    networks.LayerNormMLP((512, 512, 256), activate_final=True),
     networks.DiscreteValuedHead(vmin=-150., vmax=150., num_atoms=51),
 ])
 # Create a logger for the agent and environment loop.
@@ -85,7 +85,8 @@ agent = d4pg.D4PG(
 # plt.show()
 
 #learning completed. Now play the result
-for i in range(20):
+totalReward=0
+for i in range(50):
     timestep = environment.reset()
     reward=0
     j=0
@@ -93,7 +94,9 @@ for i in range(20):
     # Simple environment loop.
         action = agent.select_action(timestep.observation)
         timestep = environment.step(action)
-        print("reward is: ",timestep.reward)
-        print("action is: ", action)
+        #print("reward is: ",timestep.reward)
+        #print("action is: ", action)
         reward+=timestep.reward
     print("final reward is",reward)
+    totalReward+=reward
+print("total reward is", totalReward)
