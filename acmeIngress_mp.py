@@ -68,7 +68,7 @@ critic_optimizer=snt.optimizers.Adam(1e-3)
 agent = d4pg.DistributedD4PG(
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
-    num_actors=9,
+    num_actors=12,
     batch_size=256,
     n_step=4,
 )

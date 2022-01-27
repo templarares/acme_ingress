@@ -2,7 +2,7 @@
 import gym
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=False)
+environment=gym.make('Ingress-v2',visualization=True,verbose=True)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
