@@ -1,31 +1,34 @@
-from dm_env import TimeStep
+import os
+import sys
+if (os.path.exists('BenchmarkResult.txt')):
+    sys.exit("Please rename the existing BenchmarkResult file!")
+else:
+    os.mknod('BenchmarkResult.txt')
 import gym
 import gym_ingress_mc
 import numpy as np
+environment=gym.make('Ingress-v2',visualization=False,verbose=True,benchmark=True)
+environment.reset()
+foo=np.zeros((8,))
+environment.step(foo)
+environment.reset()
+
 import IPython
 import matplotlib
 import matplotlib.pyplot as plt
 from acme import environment_loop
 from acme import specs
 from acme import wrappers
-
-environment=gym.make('Ingress-v1',visualization=True)
+from dm_env import TimeStep
 environment = wrappers.GymWrapper(environment)
 environment=wrappers.SinglePrecisionWrapper(environment)
 from acme.agents.tf import d4pg
 from acme.tf import networks
 from acme.tf import utils as tf2_utils
-from acme.tf import savers as tf2_savers
 from acme.utils import loggers
-import sonnet as snt
-import pyvirtualdisplay
-import imageio
-import base64
-matplotlib.use('TkAgg')
 
-import tensorflow as tf
-physical_devices = tf.config.list_physical_devices('GPU')
-tf.config.experimental.set_memory_growth(physical_devices[0], True)
+import sonnet as snt
+
 
 # Grab the spec of the environment.
 environment_spec = specs.make_environment_spec(environment)
@@ -45,16 +48,6 @@ policy_network = snt.Sequential([
     networks.TanhToSpec(environment_spec.actions),
 ])
 
-#copy policy network from a checkpoint
-checkpointer = tf2_savers.Checkpointer(
-    subdirectory='d4pg_learner',
-    objects_to_save={
-        'policy': policy_network,
-    })
-" this will restore from a previous checkpoint; replace names accordingly"
-ckpt = '/home/templarares/acme/f997802c-5d99-11ec-903a-7085c2d3e4e3/checkpoints/d4pg_learner/ckpt-8'
-checkpointer._checkpoint.restore(ckpt).expect_partial()
-
 # Create the distributional critic network.
 critic_network = snt.Sequential([
     # The multiplexer concatenates the observations/actions.
@@ -62,7 +55,6 @@ critic_network = snt.Sequential([
     networks.LayerNormMLP((512, 512, 256), activate_final=True),
     networks.DiscreteValuedHead(vmin=-150., vmax=150., num_atoms=51),
 ])
-
 # Create a logger for the agent and environment loop.
 def myprint(content):
     print(content)
@@ -75,19 +67,45 @@ agent = d4pg.D4PG(
     policy_network=policy_network,
     critic_network=critic_network,
     observation_network=observation_network,
-    sigma=0.7,
-    checkpoint=False
+    sigma=0.0,
+    n_step=9,
+    checkpoint=True
 )
 
 
+
+# # Create an loop connecting this agent to the environment created above.
+# env_loop = environment_loop.EnvironmentLoop(
+#     environment, agent, logger=env_loop_logger)
+
+# Run a `num_episodes` training episodes.
+# Rerun this cell until the agent has learned the given task.clear
+# numEpi=100
+# env_loop.run(num_episodes=numEpi)
+# fig=plt.figure()
+# ax=plt.axes()
+# x=range(numEpi)
+# ax.scatter(x,env_loop.rewardHistory())
+# plt.savefig('foo.png')
+# plt.show()
+
 #learning completed. Now play the result
-timestep = environment.reset()
-reward=0
-while not timestep.last():
-  # Simple environment loop.
-  action = agent.select_action(timestep.observation)
-  timestep = environment.step(action)
-  print("reward is: ",timestep.reward)
-  print("action is: ", action)
-  reward+=timestep.reward
-print("final reward is",reward)
+totalReward=0
+for i in range(50):
+    timestep = environment.reset()
+    reward=0
+    j=0
+    while not timestep.last():
+    # Simple environment loop.
+        action = agent.select_action(timestep.observation)
+        timestep = environment.step(action)
+        #print("reward is: ",timestep.reward)
+        #print("action is: ", action)
+        reward+=timestep.reward
+    print("final reward is",reward)
+    output_file= open("BenchmarkResult.txt","a")
+    output_file.write(";")
+    output_file.write("%s;\n"%reward)
+    output_file.close()
+    totalReward+=reward
+print("total reward is", totalReward)

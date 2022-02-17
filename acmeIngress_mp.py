@@ -70,7 +70,7 @@ agent = d4pg.DistributedD4PG(
     network_factory=make_networks,
     num_actors=9,
     batch_size=256,
-    n_step=4,
+    n_step=8,
 )
 
 program = agent.build()
