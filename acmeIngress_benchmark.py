@@ -1,13 +1,14 @@
 import os
 import sys
-if (os.path.exists('BenchmarkResult.txt')):
+useRL=True
+if (os.path.exists('BenchmarkResult'+str(useRL)+'.txt')):
     sys.exit("Please rename the existing BenchmarkResult file!")
 else:
-    os.mknod('BenchmarkResult.txt')
+    os.mknod('BenchmarkResult'+str(useRL)+'.txt')
 import gym
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=False,verbose=True,benchmark=True)
+environment=gym.make('Ingress-v2',visualization=False,verbose=False,userl=useRL)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -68,7 +69,7 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.0,
-    n_step=9,
+    n_step=8,
     checkpoint=True
 )
 
@@ -91,7 +92,7 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-for i in range(50):
+for i in range(500): 
     timestep = environment.reset()
     reward=0
     j=0
@@ -102,9 +103,8 @@ for i in range(50):
         #print("reward is: ",timestep.reward)
         #print("action is: ", action)
         reward+=timestep.reward
-    print("final reward is",reward)
-    output_file= open("BenchmarkResult.txt","a")
-    output_file.write(";")
+    print("run ", i, " final reward is",reward)
+    output_file= open("BenchmarkResult"+str(useRL)+".txt","a")
     output_file.write("%s;\n"%reward)
     output_file.close()
     totalReward+=reward

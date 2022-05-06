@@ -62,7 +62,7 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.0,
-    n_step=8,
+    n_step=6,
     checkpoint=True
 )
 

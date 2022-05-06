@@ -39,6 +39,7 @@ build/
 .vscode/
 python/*.so
 *TXT
+*.csv
 *txt
 LFOnCar
 NudgeUp

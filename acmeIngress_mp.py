@@ -66,11 +66,12 @@ policy_optimizer=snt.optimizers.Adam(1e-3)
 critic_optimizer=snt.optimizers.Adam(1e-3)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
+    sigma=0.6,
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
     num_actors=12,
     batch_size=256,
-    n_step=8,
+    n_step=6,
 )
 
 program = agent.build()
