@@ -38,7 +38,7 @@ def make_networks(action_spec: specs.BoundedArray):
     num_dimensions = np.prod(action_spec.shape, dtype=int)
     # Create the deterministic policy network.
     policy_network = snt.Sequential([
-        networks.LayerNormMLP((256, 256, 256), activate_final=True),
+        networks.LayerNormMLP((512, 512, 512), activate_final=True),
         networks.NearZeroInitializedLinear(num_dimensions),
         networks.TanhToSpec(action_spec),
     ])
@@ -66,12 +66,13 @@ policy_optimizer=snt.optimizers.Adam(1e-3)
 critic_optimizer=snt.optimizers.Adam(1e-3)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
-    sigma=0.6,
+    sigma=0.42,
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
-    num_actors=12,
+    num_actors=6,
     batch_size=256,
-    n_step=6,
+    n_step=11,
+    discount=0.98
 )
 
 program = agent.build()

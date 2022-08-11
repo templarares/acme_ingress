@@ -44,7 +44,7 @@ observation_network = tf2_utils.batch_concat
 
 # Create the deterministic policy network.
 policy_network = snt.Sequential([
-    networks.LayerNormMLP((256, 256, 256), activate_final=True),
+    networks.LayerNormMLP((512, 512, 512), activate_final=True),
     networks.NearZeroInitializedLinear(num_dimensions),
     networks.TanhToSpec(environment_spec.actions),
 ])
@@ -69,7 +69,7 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.0,
-    n_step=8,
+    n_step=11,
     checkpoint=True
 )
 
