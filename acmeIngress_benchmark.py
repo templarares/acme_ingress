@@ -68,8 +68,9 @@ agent = d4pg.D4PG(
     policy_network=policy_network,
     critic_network=critic_network,
     observation_network=observation_network,
-    sigma=0.0,
-    n_step=11,
+    sigma=0,
+    n_step=20,
+    discount=0.99,
     checkpoint=True
 )
 
@@ -92,7 +93,7 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-for i in range(500): 
+for i in range(200): 
     timestep = environment.reset()
     reward=0
     j=0

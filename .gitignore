@@ -43,3 +43,5 @@ python/*.so
 *txt
 LFOnCar
 NudgeUp
+__py*
+MUJOCO
