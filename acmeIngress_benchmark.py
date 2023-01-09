@@ -61,7 +61,8 @@ def myprint(content):
     print(content)
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
-
+policy_optimizer=snt.optimizers.Adam(1e-12)
+critic_optimizer=snt.optimizers.Adam(1e-12)
 # Create the D4PG agent.
 agent = d4pg.D4PG(
     environment_spec=environment_spec,
@@ -71,7 +72,9 @@ agent = d4pg.D4PG(
     sigma=0,
     n_step=20,
     discount=0.99,
-    checkpoint=True
+    checkpoint=True,
+    policy_optimizer=policy_optimizer,
+    critic_optimizer=critic_optimizer
 )
 
 

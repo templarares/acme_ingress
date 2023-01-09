@@ -88,7 +88,7 @@ if __name__=='__main__':
             fp.seek(offset,2)
             lines=fp.readlines()
             #calculate reward for the latest 10 runs
-            for i in range(1,length):
+            for i in range(1,length+1):
                 line=lines[-i].decode()
                 #print(line)
                 fst=line.index(",")
@@ -119,4 +119,4 @@ if __name__=='__main__':
             terminate_acme()
             sys.exit("Training completion criteria met!")
         totalReward=0
-        time.sleep(72)
+        time.sleep(37)
