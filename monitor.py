@@ -84,11 +84,13 @@ if __name__=='__main__':
     filename2="/home/templarares/devel/src/bit-car-inout-controller/etc/NLoops.yaml"
     while True:
         with open(filename, 'rb') as fp:
-            offset=-100*length
+            line_offset=10
+            offset=-60*(length+line_offset)
             fp.seek(offset,2)
             lines=fp.readlines()
             #calculate reward for the latest 10 runs
-            for i in range(1,length+1):
+            
+            for i in range(line_offset+1,line_offset+length+1):
                 line=lines[-i].decode()
                 #print(line)
                 fst=line.index(",")
@@ -100,7 +102,7 @@ if __name__=='__main__':
                 #second version, with two more commas
                 trd=line.index(",",snd+1)
                 fth=line.index(",",trd+1)
-                reward=float(line[trd+1:fth])
+                reward=float(line[fst+1:snd])
                 #print(reward)
                 totalReward+=reward
             avgReward=totalReward/length
@@ -119,4 +121,4 @@ if __name__=='__main__':
             terminate_acme()
             sys.exit("Training completion criteria met!")
         totalReward=0
-        time.sleep(37)
+        time.sleep(20)
