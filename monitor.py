@@ -4,6 +4,7 @@ from SendSMS import sendSMS
 import time
 import signal
 import os
+import subprocess
 
 # #use twilio SMS to notify auto-termination
 # from twilio.rest import Client
@@ -59,6 +60,7 @@ if __name__=='__main__':
     #args=sys.argv
     #token=args[1]
     token="acmeSessionID"
+    cktToken="checkoutpointToken"
     length=10
     totalReward=0.0
     avgReward=0.0
@@ -66,7 +68,7 @@ if __name__=='__main__':
     RewardThreshold=70000
     NLoopsThreshold=10000
                         
-    opts,args=getopt.getopt(sys.argv[1:],"ht:l:r:n:")
+    opts,args=getopt.getopt(sys.argv[1:],"ht:l:r:n:c:")
     for opt,arg in opts:
         if opt=="-h":
             print ('monitory.py \n-t <acme session token> \n-l <length for averging evaluator reward > \
@@ -74,6 +76,8 @@ if __name__=='__main__':
             sys.exit()
         elif opt=="-t":
             token=arg
+        elif opt=="-c":
+            cktToken=arg
         elif opt=="-l":
             length=int(arg)
         elif opt=="-r":
@@ -82,10 +86,11 @@ if __name__=='__main__':
             NLoopsThreshold=int(arg)
     filename = "/home/templarares/acme/"+token+"/logs/evaluator/logs.csv"
     filename2="/home/templarares/devel/src/bit-car-inout-controller/etc/NLoops.yaml"
+    cktDir="/home/templarares/acme/"+cktToken+"/checkpoints/d4pg_learner"
     while True:
         with open(filename, 'rb') as fp:
-            line_offset=10
-            offset=-60*(length+line_offset)
+            line_offset=0
+            offset=-80*(length+line_offset)
             fp.seek(offset,2)
             lines=fp.readlines()
             #calculate reward for the latest 10 runs
@@ -102,7 +107,7 @@ if __name__=='__main__':
                 #second version, with two more commas
                 trd=line.index(",",snd+1)
                 fth=line.index(",",trd+1)
-                reward=float(line[fst+1:snd])
+                reward=float(line[trd+1:fth])
                 #print(reward)
                 totalReward+=reward
             avgReward=totalReward/length
@@ -117,8 +122,23 @@ if __name__=='__main__':
                 NLoops=1
             print("NLoops= %d"%NLoops)
         if avgReward>RewardThreshold and NLoops>NLoopsThreshold:
+            #make snapshots of the checkpoint several times, wait for the optimal networks to be saved locally
+            #time.sleep(60)
+            p=subprocess.Popen(['git','init'],cwd=cktDir)
+            p.wait()
+            p.kill()
+            for i in range(10):
+                p=subprocess.Popen(['git','add','.'],cwd=cktDir)
+                p.wait()
+                p.kill()
+                commitMsg='\"snapshot%d\"'%i
+                p=subprocess.Popen(['git','commit','-m',commitMsg],cwd=cktDir)
+                p.wait()
+                p.kill()
+                time.sleep(42)
+            
             sendSMS()
             terminate_acme()
             sys.exit("Training completion criteria met!")
         totalReward=0
-        time.sleep(20)
+        time.sleep(42)
