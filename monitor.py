@@ -90,7 +90,7 @@ if __name__=='__main__':
     while True:
         with open(filename, 'rb') as fp:
             line_offset=0
-            offset=-80*(length+line_offset)
+            offset=-60*(length+line_offset)
             fp.seek(offset,2)
             lines=fp.readlines()
             #calculate reward for the latest 10 runs
@@ -121,13 +121,14 @@ if __name__=='__main__':
             else:
                 NLoops=1
             print("NLoops= %d"%NLoops)
+            fp.close()
         if avgReward>RewardThreshold and NLoops>NLoopsThreshold:
             #make snapshots of the checkpoint several times, wait for the optimal networks to be saved locally
             #time.sleep(60)
             p=subprocess.Popen(['git','init'],cwd=cktDir)
             p.wait()
             p.kill()
-            for i in range(10):
+            for i in range(42):
                 p=subprocess.Popen(['git','add','.'],cwd=cktDir)
                 p.wait()
                 p.kill()
@@ -135,7 +136,7 @@ if __name__=='__main__':
                 p=subprocess.Popen(['git','commit','-m',commitMsg],cwd=cktDir)
                 p.wait()
                 p.kill()
-                time.sleep(42)
+                time.sleep(35)
             
             sendSMS()
             terminate_acme()

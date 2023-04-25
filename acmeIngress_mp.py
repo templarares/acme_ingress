@@ -61,21 +61,22 @@ def myprint(content):
     print(content)
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
-# this adjusts how fast the model improves per observation?
-policy_optimizer=snt.optimizers.Adam(3e-4)
-critic_optimizer=snt.optimizers.Adam(3e-4)
+# this adjusts how fast the model improves per observation, i.e. learning rate
+policy_optimizer=snt.optimizers.Adam(4e-5)
+critic_optimizer=snt.optimizers.Adam(4e-5)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
-    sigma=0.15,
+    sigma=0.1,
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
     policy_optimizer=policy_optimizer,
     critic_optimizer=critic_optimizer,
-    num_actors=5,
+    num_actors=4,
     batch_size=256,
     n_step=20,
     discount=0.99,
-    log_every=1.1
+    log_every=1.1,
+    target_update_period=10
 )
 
 program = agent.build()

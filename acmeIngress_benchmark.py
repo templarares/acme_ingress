@@ -1,8 +1,9 @@
 import os
 import sys
-useRL=True
+useRL=False
 if (os.path.exists('BenchmarkResult'+str(useRL)+'.txt')):
-    sys.exit("Please rename the existing BenchmarkResult file!")
+    #sys.exit("Please rename the existing BenchmarkResult file!")
+    print("overwritting existing results")
 else:
     os.mknod('BenchmarkResult'+str(useRL)+'.txt')
 import gym
@@ -61,8 +62,8 @@ def myprint(content):
     print(content)
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
-policy_optimizer=snt.optimizers.Adam(1e-12)
-critic_optimizer=snt.optimizers.Adam(1e-12)
+policy_optimizer=snt.optimizers.Adam(1e-15)
+critic_optimizer=snt.optimizers.Adam(1e-15)
 # Create the D4PG agent.
 agent = d4pg.D4PG(
     environment_spec=environment_spec,
@@ -96,7 +97,8 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-for i in range(200): 
+totalRuns=200
+for i in range(totalRuns): 
     timestep = environment.reset()
     reward=0
     j=0
@@ -113,3 +115,4 @@ for i in range(200):
     output_file.close()
     totalReward+=reward
 print("total reward is", totalReward)
+print("average reward is ",totalReward/totalRuns)
