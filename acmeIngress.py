@@ -85,7 +85,10 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-for i in range(50):
+i=0
+while True:
+    i+=1
+# for i in range(500):
     timestep = environment.reset()
     reward=0
     j=0
@@ -96,6 +99,7 @@ for i in range(50):
         #print("reward is: ",timestep.reward)
         #print("action is: ", action)
         reward+=timestep.reward
+    print("run ",i)
     print("final reward is",reward)
     totalReward+=reward
 print("total reward is", totalReward)

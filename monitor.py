@@ -85,7 +85,7 @@ if __name__=='__main__':
         elif opt=="-n":
             NLoopsThreshold=int(arg)
     filename = "/home/templarares/acme/"+token+"/logs/evaluator/logs.csv"
-    filename2="/home/templarares/devel/src/bit-car-inout-controller/etc/NLoops.yaml"
+    filename2="/home/templarares/devel/src/JumpingControllerRy/etc/NLoops.yaml"
     cktDir="/home/templarares/acme/"+cktToken+"/checkpoints/d4pg_learner"
     while True:
         with open(filename, 'rb') as fp:
@@ -107,7 +107,7 @@ if __name__=='__main__':
                 #second version, with two more commas
                 trd=line.index(",",snd+1)
                 fth=line.index(",",trd+1)
-                reward=float(line[trd+1:fth])
+                # reward=float(line[trd+1:fth])
                 #print(reward)
                 totalReward+=reward
             avgReward=totalReward/length

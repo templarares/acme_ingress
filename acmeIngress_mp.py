@@ -38,7 +38,7 @@ def make_networks(action_spec: specs.BoundedArray):
     num_dimensions = np.prod(action_spec.shape, dtype=int)
     # Create the deterministic policy network.
     policy_network = snt.Sequential([
-        networks.LayerNormMLP((512, 512, 512), activate_final=True),
+        networks.LayerNormMLP((256, 256, 256), activate_final=True),
         networks.NearZeroInitializedLinear(num_dimensions),
         networks.TanhToSpec(action_spec),
     ])
@@ -62,18 +62,18 @@ def myprint(content):
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
 # this adjusts how fast the model improves per observation, i.e. learning rate
-policy_optimizer=snt.optimizers.Adam(4e-5)
-critic_optimizer=snt.optimizers.Adam(4e-5)
+policy_optimizer=snt.optimizers.Adam(1e-3)
+critic_optimizer=snt.optimizers.Adam(1e-3)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
-    sigma=0.1,
+    sigma=0.42,
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
     policy_optimizer=policy_optimizer,
     critic_optimizer=critic_optimizer,
-    num_actors=4,
-    batch_size=256,
-    n_step=20,
+    num_actors=9,
+    batch_size=128,
+    n_step=6,
     discount=0.99,
     log_every=1.1,
     target_update_period=10

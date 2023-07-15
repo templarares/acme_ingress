@@ -25,7 +25,7 @@ def sendSMS():
     # 短信平台账号
     user = 'templarares'
     # 短信平台密码
-    password = md5('Ares-2031993dx')
+    password = md5('ares2031993')
     # 要发送的短信内容
     code=int(random.uniform(1000,9999))
     content = '[米纳斯]您的验证码是[%d]。训练已完成，请尽快登陆。'%code

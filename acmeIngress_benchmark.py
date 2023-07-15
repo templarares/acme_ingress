@@ -1,6 +1,6 @@
 import os
 import sys
-useRL=False
+useRL=True
 if (os.path.exists('BenchmarkResult'+str(useRL)+'.txt')):
     #sys.exit("Please rename the existing BenchmarkResult file!")
     print("overwritting existing results")
@@ -45,7 +45,7 @@ observation_network = tf2_utils.batch_concat
 
 # Create the deterministic policy network.
 policy_network = snt.Sequential([
-    networks.LayerNormMLP((512, 512, 512), activate_final=True),
+    networks.LayerNormMLP((256, 256, 256), activate_final=True),
     networks.NearZeroInitializedLinear(num_dimensions),
     networks.TanhToSpec(environment_spec.actions),
 ])
@@ -71,7 +71,7 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0,
-    n_step=20,
+    n_step=6,
     discount=0.99,
     checkpoint=True,
     policy_optimizer=policy_optimizer,
