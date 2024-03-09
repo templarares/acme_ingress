@@ -1,8 +1,10 @@
 import gym
+import gym_opendoor_mc
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=True,verbose=True)
+environment=gym.make('OpenDoor-v4',visualization=True,verbose=True)
 environment.reset()
+print("RESET@!@#qw!!!!!!")
 foo=np.zeros((8,))
 environment.step(foo)
 environment.reset()
@@ -23,7 +25,7 @@ from acme.utils import loggers
 
 import sonnet as snt
 
-
+ 
 # Grab the spec of the environment.
 environment_spec = specs.make_environment_spec(environment)
 

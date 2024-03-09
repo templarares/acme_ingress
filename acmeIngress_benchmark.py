@@ -7,7 +7,7 @@ else:
 import gym
 import gym_ingress_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=False,verbose=True,benchmark=True)
+environment=gym.make('Ingress-v2',visualization=False,verbose=False,benchmark=True)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -91,7 +91,7 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-for i in range(50):
+for i in range(100):
     timestep = environment.reset()
     reward=0
     j=0
