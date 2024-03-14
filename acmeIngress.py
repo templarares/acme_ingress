@@ -1,7 +1,8 @@
 import gym
 import gym_ingress_mc
+import gym_opendoor_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=True,verbose=True)
+environment=gym.make('OpenDoor-v4',visualization=True,verbose=True)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -62,7 +63,8 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.0,
-    n_step=6,
+    batch_size=64,
+    n_step=9,
     checkpoint=True
 )
 

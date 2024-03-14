@@ -107,7 +107,7 @@ if __name__=='__main__':
                 #second version, with two more commas
                 trd=line.index(",",snd+1)
                 fth=line.index(",",trd+1)
-                # reward=float(line[trd+1:fth])
+                reward=float(line[trd+1:fth])
                 #print(reward)
                 totalReward+=reward
             avgReward=totalReward/length

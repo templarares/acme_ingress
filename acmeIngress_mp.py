@@ -1,3 +1,4 @@
+from tabnanny import verbose
 import launchpad as lp
 from dm_env import TimeStep
 
@@ -26,9 +27,10 @@ tf.config.experimental.set_memory_growth(physical_devices[0], True)
 def make_environment(x):
     import gym
     import gym_ingress_mc
+    import gym_opendoor_mc
     """Visulisation still not working, as visulized environment has to be created before acme.tf imports
     when visulization works, let the argument visulization=x instead of always False"""
-    environment=gym.make('Ingress-v2',visualization=False)
+    environment=gym.make('OpenDoor-v4',visualization=False,verbose=False)
     environment = wrappers.GymWrapper(environment)
     environment=wrappers.SinglePrecisionWrapper(environment)
     environment.reset()
@@ -62,21 +64,21 @@ def myprint(content):
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
 # this adjusts how fast the model improves per observation, i.e. learning rate
-policy_optimizer=snt.optimizers.Adam(1e-3)
-critic_optimizer=snt.optimizers.Adam(1e-3)
+policy_optimizer=snt.optimizers.Adam(1e-5)
+critic_optimizer=snt.optimizers.Adam(1e-5)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
-    sigma=0.42,
+    sigma=0.3,
     environment_factory=lambda x: make_environment(x),
     network_factory=make_networks,
     policy_optimizer=policy_optimizer,
     critic_optimizer=critic_optimizer,
-    num_actors=9,
-    batch_size=128,
-    n_step=6,
+    num_actors=6,
+    batch_size=64,
+    n_step=9,
     discount=0.99,
     log_every=1.1,
-    target_update_period=10
+    target_update_period=15
 )
 
 program = agent.build()
