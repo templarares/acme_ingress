@@ -48,7 +48,7 @@ critic_network = snt.Sequential([
     # The multiplexer concatenates the observations/actions.
     networks.CriticMultiplexer(),
     networks.LayerNormMLP((512, 512, 256), activate_final=True),
-    networks.DiscreteValuedHead(vmin=-150., vmax=150., num_atoms=51),
+    networks.DiscreteValuedHead(vmin=0., vmax=11000., num_atoms=51),
 ])
 # Create a logger for the agent and environment loop.
 def myprint(content):
@@ -63,8 +63,8 @@ agent = d4pg.D4PG(
     critic_network=critic_network,
     observation_network=observation_network,
     sigma=0.0,
-    batch_size=64,
-    n_step=9,
+    batch_size=128,
+    n_step=6,
     checkpoint=True
 )
 

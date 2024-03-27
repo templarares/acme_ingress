@@ -5,7 +5,7 @@ from SendSMS import sendSMS
 
 from numpy import ones
 
-cktToken="e077fe62-2130-11ee-ad8c-0c9d92c3ff60"
+cktToken="99a3e9bc-e681-11ee-88c6-207bd20a2abe"
 cktDir="/home/templarares/acme/"+cktToken+"/checkpoints/d4pg_learner"
 learnerDir="/home/templarares/acmeNew/lib/python3.7/site-packages/acme/agents/tf/d4pg/"
 if os.path.exists("autoBenchmarksResult"):

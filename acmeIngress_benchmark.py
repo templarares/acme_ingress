@@ -8,8 +8,9 @@ else:
     os.mknod('BenchmarkResult'+str(useRL)+'.txt')
 import gym
 import gym_ingress_mc
+import gym_opendoor_mc
 import numpy as np
-environment=gym.make('Ingress-v2',visualization=False,verbose=False,userl=useRL)
+environment=gym.make('OpenDoor-v4',visualization=True,verbose=False)
 environment.reset()
 foo=np.zeros((8,))
 environment.step(foo)
@@ -73,7 +74,7 @@ agent = d4pg.D4PG(
     sigma=0,
     n_step=6,
     discount=0.99,
-    checkpoint=True,
+    checkpoint=False,
     policy_optimizer=policy_optimizer,
     critic_optimizer=critic_optimizer
 )
@@ -97,7 +98,7 @@ agent = d4pg.D4PG(
 
 #learning completed. Now play the result
 totalReward=0
-totalRuns=200
+totalRuns=30
 for i in range(totalRuns): 
     timestep = environment.reset()
     reward=0

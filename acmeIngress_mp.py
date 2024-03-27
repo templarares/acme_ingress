@@ -49,7 +49,7 @@ def make_networks(action_spec: specs.BoundedArray):
         # The multiplexer concatenates the observations/actions.
         networks.CriticMultiplexer(),
         networks.LayerNormMLP((512, 512, 256), activate_final=True),
-        networks.DiscreteValuedHead(vmin=-150., vmax=150., num_atoms=51),
+        networks.DiscreteValuedHead(vmin=0., vmax=11000., num_atoms=51),
     ])
     return {'policy': policy_network,
         'critic': critic_network,
@@ -64,8 +64,8 @@ def myprint(content):
 agent_logger = loggers.TerminalLogger(label='agent', print_fn=myprint,time_delta=0)
 env_loop_logger = loggers.TerminalLogger(label='env_loop', print_fn=myprint,time_delta=0)
 # this adjusts how fast the model improves per observation, i.e. learning rate
-policy_optimizer=snt.optimizers.Adam(1e-5)
-critic_optimizer=snt.optimizers.Adam(1e-5)
+policy_optimizer=snt.optimizers.Adam(1e-4)
+critic_optimizer=snt.optimizers.Adam(1e-4)
 # Create the D4PG agent.
 agent = d4pg.DistributedD4PG(
     sigma=0.3,
@@ -73,12 +73,12 @@ agent = d4pg.DistributedD4PG(
     network_factory=make_networks,
     policy_optimizer=policy_optimizer,
     critic_optimizer=critic_optimizer,
-    num_actors=6,
-    batch_size=64,
-    n_step=9,
+    num_actors=7,
+    batch_size=128,
+    n_step=6,
     discount=0.99,
     log_every=1.1,
-    target_update_period=15
+    target_update_period=100
 )
 
 program = agent.build()
